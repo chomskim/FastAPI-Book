@@ -149,7 +149,7 @@ curl -X 'POST' \
 -H 'accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
-"email": "fastapi@packt.com",
+"email": "fastapi@example.com",
 "password": "Stro0ng!",
 "username": "FastPackt"
 }'
@@ -162,7 +162,7 @@ curl -X 'POST' \
 -H 'accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
-"email": "fastapi@packt.com",
+"email": "fastapi@example.com",
 "password": "Stro0ng!"
 }'
 --------
@@ -173,7 +173,7 @@ curl -X 'POST' \
 -H 'accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
-"email": "fastapi@packt.com",
+"email": "fastapi@example.com",
 "password": "password!"
 }'
 --------
@@ -313,5 +313,18 @@ curl -X 'GET' 'http://0.0.0.0:8000/event/' -H 'accept: application/json'
   }
 ]
 
+```
 
+### Chapter 7
+
+```sh
+pip install passlib[bcrypt]
+
+```
+
+### Chapter 8
+
+```sh
+pip install pytest
+pip install httpx pytest-asyncio
 ```

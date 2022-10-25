@@ -23,8 +23,8 @@ class User(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "email": "fastapi@packt.com",
-                "username": "fastapipackt001",
+                "email": "fastapi@example.com",
+                "username": "fastapiexample001",
                 "events": [],
             }
         }
@@ -36,7 +36,7 @@ class NewUser(User):
     class Config:
         schema_extra = {
             "example": {
-                "email": "fastapi@packt.com",
+                "email": "fastapi@example.com",
                 "password": "Stro0ng!",
                 "username": "FastPackt"
             }

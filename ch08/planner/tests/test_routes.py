@@ -7,13 +7,13 @@ from models.events import Event
 
 @pytest.fixture(scope="module")
 async def access_token() -> str:
-    return create_access_token("testuser@packt.com")
+    return create_access_token("testuser@example.com")
 
 
 @pytest.fixture(scope="module")
 async def mock_event() -> Event:
     new_event = Event(
-        creator="testuser@packt.com",
+        creator="testuser@example.com",
         title="FastAPI Book Launch",
         image="https://linktomyimage.com/image.png",
         description="We will be discussing the contents of the FastAPI book in this event.Ensure to come with your own copy to win gifts!",

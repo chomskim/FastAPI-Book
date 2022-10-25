@@ -5,7 +5,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_sign_new_user(default_client: httpx.AsyncClient) -> None:
     payload = {
-        "email": "testuser@packt.com",
+        "email": "testuser@example.com",
         "password": "testpassword",
     }
 
@@ -27,7 +27,7 @@ async def test_sign_new_user(default_client: httpx.AsyncClient) -> None:
 @pytest.mark.asyncio
 async def test_sign_user_in(default_client: httpx.AsyncClient) -> None:
     payload = {
-        "username": "testuser@packt.com",
+        "username": "testuser@example.com",
         "password": "testpassword"
     }
 
