@@ -17,8 +17,22 @@ $ (venv) pip install pydantic - install Pydantic (although it should already be 
 
 $ (venv) python chapter3_pydantic.py - running the examples in the Python interpreter
 
-$ (venv) uvicorn chapter_3_first_endpoint:app --reload - starting the server - filename:instance_name
+$ (venv) uvicorn chapter3_first_endpoint:app --reload - starting the server - filename:instance_name
 
 $ (venv) (venv) λ http "http://localhost:8000/" - testing with httpie
 
 $ (venv) pip install python-multipart - install Python Multipart for handling form data
+
+$ uvicorn chapter3_query_string:app --reload
+
+$ http "http://localhost:8000/cars/price?min_price=2000&max_price=4000"
+HTTP/1.1 200 OK
+content-length: 60
+content-type: application/json
+date: Wed, 26 Oct 2022 06:10:31 GMT
+server: uvicorn
+
+{
+    "Message": "Listing cars with prices between 2000 and 4000"
+}
+
