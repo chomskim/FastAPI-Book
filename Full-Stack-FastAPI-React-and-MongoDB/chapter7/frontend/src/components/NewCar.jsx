@@ -47,8 +47,8 @@ const NewCar = () => {
     <div>
       <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
         <div className='flex flex-col justify-center items-center'>
-          <label class='label'>
-            <span class='label-text'>Car brand</span>
+          <label className='label'>
+            <span className='label-text'>Car brand</span>
           </label>
           <input
             type='text'
@@ -60,8 +60,8 @@ const NewCar = () => {
           />
           {errors?.brand && errors.brand.message}
 
-          <label class='label'>
-            <span class='label-text'>Car model</span>
+          <label className='label'>
+            <span className='label-text'>Car model</span>
           </label>
           <input
             type='text'
@@ -73,8 +73,8 @@ const NewCar = () => {
           />
           {errors?.make && errors.make.message}
 
-          <label class='label'>
-            <span class='label-text'>Production year</span>
+          <label className='label'>
+            <span className='label-text'>Production year</span>
           </label>
 
           <input
@@ -87,8 +87,8 @@ const NewCar = () => {
           />
           {errors?.year && errors.year.message}
 
-          <label class='label'>
-            <span class='label-text'>Mileage in Km</span>
+          <label className='label'>
+            <span className='label-text'>Mileage in Km</span>
           </label>
           <input
             type='number'
@@ -100,8 +100,8 @@ const NewCar = () => {
           />
           {errors?.km && errors.km.message}
 
-          <label class='label'>
-            <span class='label-text'>Engine displacement (cm3)</span>
+          <label className='label'>
+            <span className='label-text'>Engine displacement (cm3)</span>
           </label>
           <input
             type='number'
@@ -113,8 +113,8 @@ const NewCar = () => {
           />
           {errors?.cm3 && errors.cm3.message}
 
-          <label class='label'>
-            <span class='label-text'>Price in Euro</span>
+          <label className='label'>
+            <span className='label-text'>Price in Euro</span>
           </label>
 
           <input
@@ -136,7 +136,7 @@ const NewCar = () => {
           <div>
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              class='stroke-current flex-shrink-0 h-6 w-6'
+              className='stroke-current flex-shrink-0 h-6 w-6'
               fill='none'
               viewBox='0 0 24 24'
             >

@@ -2,10 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { buildUrl } from 'cloudinary-build-url'
 
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUD_NAME
+
 const transformedUrl = (id) =>
   buildUrl(id, {
     cloud: {
-      cloudName: 'ddyjlwyjv',
+      cloudName: CLOUD_NAME,
     },
 
     transformations: {

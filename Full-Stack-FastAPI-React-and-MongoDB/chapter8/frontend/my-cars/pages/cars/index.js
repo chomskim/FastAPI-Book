@@ -1,8 +1,10 @@
+import axios from 'axios'
 import Card from '../../components/Card'
 
 export const getServerSideProps = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cars/`)
-  const cars = await res.json()
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cars/`)
+  console.log('res=', res)
+  const cars = res.data
 
   return {
     props: {

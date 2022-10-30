@@ -1,4 +1,8 @@
+from routers.users import router as users_router
+from routers.cars import router as cars_router
+from motor.motor_asyncio import AsyncIOMotorClient
 from decouple import config
+import uvicorn
 
 from fastapi import FastAPI
 
@@ -18,11 +22,6 @@ middleware = [
         allow_headers=["*"],
     )
 ]
-
-from motor.motor_asyncio import AsyncIOMotorClient
-
-from routers.cars import router as cars_router
-from routers.users import router as users_router
 
 
 DB_URL = config("DB_URL", cast=str)
@@ -50,3 +49,6 @@ async def startup_db_client():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     app.mongodb_client.close()
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True)
