@@ -1,10 +1,10 @@
-import { Navigate, Outlet } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { Navigate, Outlet } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 const RequireAuthentication = () => {
-  const { auth } = useAuth();
+  const { auth } = useAuth()
 
-  return auth?.username ? <Outlet /> : <Navigate to="/login" />;
-};
+  return auth?.username ? <Outlet /> : <Navigate to='/login' />
+}
 
-export default RequireAuthentication;
+export default RequireAuthentication

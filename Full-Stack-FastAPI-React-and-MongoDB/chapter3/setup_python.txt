@@ -36,3 +36,18 @@ server: uvicorn
     "Message": "Listing cars with prices between 2000 and 4000"
 }
 
+$ uvicorn chapter3_body2:app --host=0.0.0.0 --port 8000 --reload
+
+$ uvicorn chapter3_header:app --host=0.0.0.0 --port 8000 --reload
+
+$ http GET "http://localhost:8000/headers"
+HTTP/1.1 200 OK
+content-length: 29
+content-type: application/json
+date: Wed, 26 Oct 2022 14:42:42 GMT
+server: uvicorn
+
+{
+    "User-Agent": "HTTPie/3.2.1"
+}
+
