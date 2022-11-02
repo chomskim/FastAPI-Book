@@ -81,8 +81,6 @@ yarn add swr
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 
 NEXT_PUBLIC_CLOUD_NAME=dd0######
-NEXT_PUBLIC_API_KEY=93############
-NEXT_PUBLIC_API_SECRET=<serect key>
 ```
 
 - Use axios
