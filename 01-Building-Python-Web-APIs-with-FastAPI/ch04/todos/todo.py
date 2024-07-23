@@ -14,29 +14,27 @@ templates = Jinja2Templates(directory="templates/")
 async def add_todo(request: Request, todo: Todo = Depends(Todo.as_form)):
     todo.id = len(todo_list) + 1
     todo_list.append(todo)
-    return templates.TemplateResponse("todo.html",
-                                      {
-                                          "request": request,
-                                          "todos": todo_list
-                                      })
+    return templates.TemplateResponse(
+        "todo.html", {"request": request, "todos": todo_list}
+    )
 
 
 @todo_router.get("/todo", response_model=TodoItems)
 async def retrieve_todo(request: Request):
-    return templates.TemplateResponse("todo.html", {
-        "request": request,
-        "todos": todo_list
-    })
+    return templates.TemplateResponse(
+        "todo.html", {"request": request, "todos": todo_list}
+    )
 
 
 @todo_router.get("/todo/{todo_id}")
-async def get_single_todo(request: Request, todo_id: int = Path(..., title="The ID of the todo to retrieve.")):
+async def get_single_todo(
+    request: Request, todo_id: int = Path(..., title="The ID of the todo to retrieve.")
+):
     for todo in todo_list:
         if todo.id == todo_id:
-            return templates.TemplateResponse("todo.html", {
-                "request": request,
-                "todo": todo
-            })
+            return templates.TemplateResponse(
+                "todo.html", {"request": request, "todo": todo}
+            )
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Todo with supplied ID doesn't exist",
@@ -44,14 +42,15 @@ async def get_single_todo(request: Request, todo_id: int = Path(..., title="The 
 
 
 @todo_router.put("/todo/{todo_id}")
-async def update_todo(request: Request, todo_data: TodoItem,
-                      todo_id: int = Path(..., title="The ID of the todo to be updated.")) -> dict:
+async def update_todo(
+    request: Request,
+    todo_data: TodoItem,
+    todo_id: int = Path(..., title="The ID of the todo to be updated."),
+) -> dict:
     for todo in todo_list:
         if todo.id == todo_id:
             todo.item = todo_data.item
-            return {
-                "message": "Todo updated successfully."
-            }
+            return {"message": "Todo updated successfully."}
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
@@ -65,9 +64,7 @@ async def delete_single_todo(request: Request, todo_id: int) -> dict:
         todo = todo_list[index]
         if todo.id == todo_id:
             todo_list.pop(index)
-            return {
-                "message": "Todo deleted successfully."
-            }
+            return {"message": "Todo deleted successfully."}
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Todo with supplied ID doesn't exist",
@@ -77,6 +74,4 @@ async def delete_single_todo(request: Request, todo_id: int) -> dict:
 @todo_router.delete("/todo")
 async def delete_all_todo() -> dict:
     todo_list.clear()
-    return {
-        "message": "Todos deleted successfully."
-    }
+    return {"message": "Todos deleted successfully."}

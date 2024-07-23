@@ -1,91 +1,64 @@
-from typing import List, Tuple
+import asyncio
+from pathlib import Path
 
 import httpx
-import joblib
 import pytest
 from fastapi import status
-from sklearn.pipeline import Pipeline
-from chapter13.chapter13_prediction_endpoint import (
-    app as chapter13_prediction_endpoint_app,
+from httpx_ws import aconnect_ws
+
+from chapter13.chapter13_api import app as chapter13_api_app
+from chapter13.websocket_object_detection.app import (
+    app as chapter13_websocket_object_detection_app,
 )
-from chapter13.chapter13_caching import app as chapter13_caching_app, memory
-from chapter13.chapter13_async_not_async import app as chapter13_async_not_async_app
+
+coffee_shop_image_file = Path(__file__).parent.parent / "assets" / "coffee-shop.jpg"
+detected_labels = {"person", "couch", "chair", "laptop", "dining table"}
 
 
-def test_chapter13_dump_joblib():
-    from chapter13.chapter13_dump_joblib import categories
-
-    model_file = "newsgroups_model.joblib"
-    loaded_model: Tuple[Pipeline, List[str]] = joblib.load(model_file)
-    model, targets = loaded_model
-
-    assert isinstance(model, Pipeline)
-    assert set(targets) == set(categories)
-
-
-def test_chapter13_load_joblib():
-    from chapter13.chapter13_load_joblib import model, targets
-
-    assert isinstance(model, Pipeline)
-    assert set(targets) == set(
-        [
-            "soc.religion.christian",
-            "talk.religion.misc",
-            "comp.sys.mac.hardware",
-            "sci.crypt",
-        ]
-    )
-
-
-@pytest.mark.fastapi(app=chapter13_prediction_endpoint_app)
+@pytest.mark.fastapi(app=chapter13_api_app)
 @pytest.mark.asyncio
-class TestChapter13PredictionEndpoint:
+class TestChapter13API:
     async def test_invalid_payload(self, client: httpx.AsyncClient):
-        response = await client.post("/prediction", json={})
+        response = await client.post("/object-detection", files={})
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     async def test_valid_payload(self, client: httpx.AsyncClient):
         response = await client.post(
-            "/prediction", json={"text": "computer cpu memory ram"}
+            "/object-detection", files={"image": open(coffee_shop_image_file, "rb")}
         )
 
         assert response.status_code == status.HTTP_200_OK
         json = response.json()
-        assert json == {"category": "comp.sys.mac.hardware"}
+        objects = json["objects"]
+        assert len(objects) > 0
+        for object in objects:
+            assert "box" in object
+            assert object["label"] in detected_labels
 
 
-@pytest.mark.fastapi(app=chapter13_caching_app)
+@pytest.mark.fastapi(app=chapter13_websocket_object_detection_app)
 @pytest.mark.asyncio
-class TestChapter13Caching:
-    async def test_invalid_payload(self, client: httpx.AsyncClient):
-        response = await client.post("/prediction", json={})
+class TestChapter13WebSocketobjectDetection:
+    async def test_single_detection(self, client: httpx.AsyncClient):
+        async with aconnect_ws("/object-detection", client) as websocket:
+            with open(coffee_shop_image_file, "rb") as image:
+                await websocket.send_bytes(image.read())
+                result = await websocket.receive_json()
+                objects = result["objects"]
+                assert len(objects) > 0
+                for object in objects:
+                    assert "box" in object
+                    assert object["label"] in detected_labels
 
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-
-    async def test_valid_payload(self, client: httpx.AsyncClient):
-        memory.clear()
-
-        for _ in range(2):
-            response = await client.post(
-                "/prediction", json={"text": "computer cpu memory ram"}
-            )
-
-            assert response.status_code == status.HTTP_200_OK
-            json = response.json()
-            assert json == {"category": "comp.sys.mac.hardware"}
-
-    async def test_delete_cache(self, client: httpx.AsyncClient):
-        response = await client.delete("/cache")
-
-        assert response.status_code == status.HTTP_204_NO_CONTENT
-
-
-@pytest.mark.fastapi(app=chapter13_async_not_async_app)
-@pytest.mark.asyncio
-class TestChapter13AsyncNotAsync:
-    @pytest.mark.parametrize("path", ["/fast", "/slow-async", "/slow-sync"])
-    async def test_route(self, path: str, client: httpx.AsyncClient):
-        response = await client.get(path)
-        assert response.status_code == status.HTTP_200_OK
-        assert response.json() == {"endpoint": path[1:]}
+    async def test_backpressure(self, client: httpx.AsyncClient):
+        QUEUE_LIMIT = 10
+        async with aconnect_ws("/object-detection", client) as websocket:
+            with open(coffee_shop_image_file, "rb") as image:
+                bytes = image.read()
+                for _ in range(QUEUE_LIMIT + 1):
+                    await websocket.send_bytes(bytes)
+                result = await websocket.receive_json()
+                assert result is not None
+                with pytest.raises(asyncio.TimeoutError):
+                    await websocket.receive_json(timeout=0.1)

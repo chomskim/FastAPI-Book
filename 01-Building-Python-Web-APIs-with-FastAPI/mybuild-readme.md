@@ -12,7 +12,7 @@ pip install fastapi uvicorn
 
 ```sh
 cd ch02/todos
-uvicorn api:app --port 8080 --reload
+uvicorn api:app --port 8000 --reload
 
 url http://127.0.0.1:8000/
 {"message":"Hello World"}(env0)
@@ -149,9 +149,10 @@ curl -X 'POST' \
 -H 'accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
-"email": "fastapi@example.com",
+"email": "fastapi@packt.com",
 "password": "Stro0ng!",
-"username": "FastPackt"
+"username": "FastPackt",
+"events": []
 }'
 --------
 {"message":"User successfully registered!"}
@@ -236,6 +237,8 @@ curl -X 'GET' 'http://0.0.0.0:8000/event/1' -H 'accept: application/json'
 
 ```sh
 pip install sqlmodel
+pip install beanie motor
+pip install pydantic_settings
 
 [Git checkout from planner-sql branch]
 

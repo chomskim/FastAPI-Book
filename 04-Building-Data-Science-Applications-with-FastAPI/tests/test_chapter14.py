@@ -1,63 +1,58 @@
-from os import path
-from typing import cast
+import uuid
+from typing import Any
+from unittest.mock import MagicMock, patch
 
 import httpx
 import pytest
+from dramatiq import Message
 from fastapi import status
-from fastapi.testclient import TestClient
-from pytest_unordered import unordered
-from starlette.testclient import WebSocketTestSession
+from PIL import Image
 
-from chapter14.chapter14_api import app as chapter14_api_app
-from chapter14.websocket_face_detection.app import (
-    app as chapter14_websocket_face_detection_app,
-)
-
-assets_folder = path.join(path.dirname(path.dirname(__file__)), "assets")
-people_image_file = path.join(assets_folder, "people.jpg")
+from chapter14.basic.api import app as chapter14_app
+from chapter14.basic.text_to_image import TextToImage
+from chapter14.basic.worker import text_to_image_task
 
 
-@pytest.mark.fastapi(app=chapter14_api_app)
+def test_chapter14_basic_text_to_image():
+    text_to_image = TextToImage()
+    text_to_image.load_model()
+    image = text_to_image.generate(
+        "a photo of squirrels partying in a night club", num_steps=1
+    )
+    assert isinstance(image, Image.Image)
+
+
+@pytest.mark.fastapi(app=chapter14_app)
 @pytest.mark.asyncio
-class TestChapter14API:
-    async def test_invalid_payload(self, client: httpx.AsyncClient):
-        response = await client.post("/face-detection", files={})
-
+class TestChapter14BasicAPI:
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            {},
+            {"prompt": "PROMPT", "num_steps": -1},
+            {"prompt": "PROMPT", "num_steps": 0},
+            {"prompt": "PROMPT", "num_steps": 100},
+        ],
+    )
+    async def test_invalid_payload(
+        self, payload: dict[str, Any], client: httpx.AsyncClient
+    ):
+        response = await client.post("/image-generation", json=payload)
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
-    async def test_valid_payload(self, client: httpx.AsyncClient):
-        response = await client.post(
-            "/face-detection", files={"image": open(people_image_file, "rb")}
-        )
+    async def test_valid(self, client: httpx.AsyncClient):
+        message_mock = MagicMock(spec=Message)
+        message_mock.message_id = str(uuid.uuid4())
 
-        assert response.status_code == status.HTTP_200_OK
-        json = response.json()
-        faces = json["faces"]
-        assert unordered(faces) == [[237, 92, 80, 80], [426, 75, 115, 115]]
+        with patch.object(
+            text_to_image_task, "send", return_value=message_mock
+        ) as send_mock:
+            response = await client.post("/image-generation", json={"prompt": "PROMPT"})
 
+            assert response.status_code == status.HTTP_202_ACCEPTED
+            json = response.json()
+            assert json["task_id"] == message_mock.message_id
 
-@pytest.mark.fastapi(app=chapter14_websocket_face_detection_app)
-class TestChapter14WebSocketFaceDetection:
-    def test_single_detection(self, websocket_client: TestClient):
-        with websocket_client.websocket_connect("/face-detection") as websocket:
-            websocket = cast(WebSocketTestSession, websocket)
-
-            with open(people_image_file, "rb") as image:
-                websocket.send_bytes(image.read())
-                result = websocket.receive_json()
-                faces = result["faces"]
-                assert unordered(faces) == [[237, 92, 80, 80], [426, 75, 115, 115]]
-
-    def test_backpressure(self, websocket_client: TestClient):
-        QUEUE_LIMIT = 10
-        with websocket_client.websocket_connect("/face-detection") as websocket:
-            websocket = cast(WebSocketTestSession, websocket)
-
-            with open(people_image_file, "rb") as image:
-                bytes = image.read()
-                for _ in range(QUEUE_LIMIT + 1):
-                    websocket.send_bytes(bytes)
-                for _ in range(QUEUE_LIMIT):
-                    result = websocket.receive_json()
-                    faces = result["faces"]
-                    assert unordered(faces) == [[237, 92, 80, 80], [426, 75, 115, 115]]
+            send_mock.assert_called_once_with(
+                "PROMPT", negative_prompt=None, num_steps=50
+            )

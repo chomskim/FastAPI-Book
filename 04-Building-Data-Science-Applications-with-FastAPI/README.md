@@ -1,67 +1,84 @@
-# Building Data Science Applications with FastAPI
 
-<a href="https://www.packtpub.com/product/building-data-science-applications-with-fastapi/9781801079211?utm_source=github&utm_medium=repository&utm_campaign=9781801079211"><img src="https://static.packt-cdn.com/products/9781801079211/cover/smaller" alt="Building Data Science Applications with FastAPI" height="256px" align="right"></a>
+### [Packt Conference : Put Generative AI to work on Oct 11-13 (Virtual)](https://packt.link/JGIEY)
 
-This is the code repository for [Building Data Science Applications with FastAPI](https://www.packtpub.com/product/building-data-science-applications-with-fastapi/9781801079211?utm_source=github&utm_medium=repository&utm_campaign=9781801079211), published by Packt.
+<b><p align='center'>[![Packt Conference](https://hub.packtpub.com/wp-content/uploads/2023/08/put-generative-ai-to-work-packt.png)](https://packt.link/JGIEY)</p></b> 
+3 Days, 20+ AI Experts, 25+ Workshops and Power Talks 
+
+Code: <b>USD75OFF</b>
+
+# Building Data Science Applications with FastAPI - Second Edition
+
+<a href="https://www.packtpub.com/product/building-data-science-applications-with-fastapi-second-edition/9781837632749?utm_source=github&utm_medium=repository&utm_campaign=9781837632749"><img src="https://content.packt.com/B19528/cover_image_small.jpg" alt="Building Data Science Applications with FastAPI -Second Edition" height="256px" align="right"></a>
+
+This is the code repository for [Building Data Science Applications with FastAPI -Second Edition](https://www.packtpub.com/product/building-data-science-applications-with-fastapi-second-edition/9781837632749?utm_source=github&utm_medium=repository&utm_campaign=9781837632749), published by Packt.
 
 **Develop, manage, and deploy efficient machine learning applications with Python**
 
 ## What is this book about?
-FastAPI is a web framework for building APIs with Python 3.6 and its later versions based on standard Python-type hints. With this book, you’ll be able to create fast and reliable data science API backends using practical examples.
+Building Data Science Applications with FastAPI is the go-to resource for creating efficient and dependable data science API backends. This second edition incorporates the latest Python and FastAPI advancements, along with two new AI projects – a real-time object detection system and a text-to-image generation platform using Stable Diffusion.
 
-This book starts with the basics of the FastAPI framework and associated modern Python programming language concepts. You'll then be taken through all the aspects of the framework, including its powerful dependency injection system and how you can use it to communicate with databases, implement authentication and integrate machine learning models. Later, you’ll cover best practices relating to testing and deployment to run a high-quality and robust application. You’ll also be introduced to the extensive ecosystem of Python data science packages. As you progress, you’ll learn how to build data science applications in Python using FastAPI. The book also demonstrates how to develop fast and efficient machine learning prediction backends and test them to achieve the best performance. Finally, you’ll see how to implement a real-time face detection system using WebSockets and a web browser as a client.
-
-By the end of this FastAPI book, you’ll have not only learned how to implement Python in data science projects but also how to maintain and design them to meet high programming standards with the help of FastAPI.
-
-This book covers the following exciting features:
+This book covers the following exciting features: 
 * Explore the basics of modern Python and async I/O programming
 * Get to grips with basic and advanced concepts of the FastAPI framework
-* Implement a FastAPI dependency to efficiently run a machine learning model
-* Integrate a simple face detection algorithm in a FastAPI backend
-* Integrate common Python data science libraries in a web backend
 * Deploy a performant and reliable web backend for a data science application
+* Integrate common Python data science libraries into a web backend
+* Integrate an object detection algorithm into a FastAPI backend
+* Build a distributed text-to-image AI system with Stable Diffusion
+* Add metrics and logging and learn how to monitor them
 
-If you feel this book is for you, get your [copy](https://www.amazon.com/dp/1801079218) today!
+If you feel this book is for you, get your [copy](https://www.amazon.com/dp/B0C9D1QYVX) today!
 
 <a href="https://www.packtpub.com/?utm_source=github&utm_medium=banner&utm_campaign=GitHubBanner"><img src="https://raw.githubusercontent.com/PacktPublishing/GitHub/master/GitHub.png" 
 alt="https://www.packtpub.com/" border="5" /></a>
 
+
 ## Instructions and Navigations
-All of the code is organized into folders. For example, Chapter2.
+All of the code is organized into folders.
 
 The code will look like the following:
 ```
-from pydantic import BaseModel
-class Person(BaseModel):
-  first_name: str
-  last_name: str
-  age: int
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/users/{type}/{id}")
+async def get_user(type: str, id: int):
+    return {"type": type, "id": id}
 ```
 
+
 **Following is what you need for this book:**
-This Python data science book is for data scientists and software developers interested in gaining knowledge of FastAPI and its ecosystem to build data science applications. Basic knowledge of data science and machine learning concepts and how to apply them in Python is recommended.
+This book is for data scientists and software developers interested in gaining knowledge of FastAPI and its ecosystem to build data science applications. 
+Basic knowledge of data science and machine learning concepts and how to apply them in Python is recommended.	
 
-With the following software and hardware list you can run all code files present in the book (Chapter 1-14).
+With the following software and hardware list you can run all code files present in the book.
+
+
 ### Software and Hardware List
-| Chapter | Software required | OS required |
-| -------- | ------------------------------------ | ----------------------------------- |
-| 1 - 14 | Python 3.7 and above, JavaScript       | Windows, Mac OS X, and Linux (Any) |
+
+We’ll mainly work with the Python programming language. The first chapter will explain
+how to set up a proper Python environment on your operating system. Some examples also involve
+running web pages with JavaScript, so you’ll need a modern browser such as Google Chrome or
+Mozilla Firefox.
+In Chapter 14, we’ll run the Stable Diffusion model, which requires a powerful machine. We recommend
+a computer with 16 GB of RAM and a modern NVIDIA GPU to be able to generate good-looking images.
+System requirements are mentioned in the following table:
+
+| Software/Hardware                       | Operating System requirements      |
+| ------------------------------------    | -----------------------------------|
+| Python 3.10+                            | Windows, Mac OS X, and Linux (Any) |                                                            
+| Javascript                              | Windows, Mac OS X, and Linux (Any) |
 
 
-We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](https://static.packt-cdn.com/downloads/9781801079211_ColorImages.pdf).
+### Related products <Other books you may enjoy>
+* Applied Geospatial Data Science with Python [[Packt]](https://www.packtpub.com/product/applied-geospatial-data-science-with-python/9781803238128) [[Amazon]](https://www.amazon.com/dp/B0BJ7GPXMG)
 
-### Related products
-* Hands-On Machine Learning with scikit-learn and Scientific Python Toolkits [[Packt]](https://www.packtpub.com/product/hands-on-machine-learning-with-scikit-learn-and-scientific-python-toolkits/9781838826048?utm_source=github&utm_medium=repository&utm_campaign=9781838826048) [[Amazon]](https://www.amazon.com/dp/1838826041)
-
-* Automated Machine Learning with AutoKeras [[Packt]](https://www.packtpub.com/product/automated-machine-learning-with-autokeras/9781800567641?utm_source=github&utm_medium=repository&utm_campaign=9781800567641) [[Amazon]](https://www.amazon.com/dp/1800567642)
+* Building Data Science Solutions with Anaconda [[Packt]](https://www.packtpub.com/product/building-data-science-solutions-with-anaconda/9781800568785) [[Amazon]](https://www.amazon.com/dp/B09X26411W)
 
 ## Get to Know the Author
 **François Voron**
-is graduated from the University of Saint-Étienne (France) and the University of Alicante (Spain) with a master's degree in Machine Learning and Data Mining. A full-stack web developer and a data scientist, François has a proven track record working in the SaaS industry, with a special focus on Python backends and REST API.
-He is also the creator and maintainer of FastAPI Users, the #1 authentication library for FastAPI, and is one of the top experts in the FastAPI community.
-
-
-### Download a free PDF
-
- <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
-<p align="center"> <a href="https://packt.link/free-ebook/9781801079211">https://packt.link/free-ebook/9781801079211 </a> </p>
+graduated from the University of Saint-Étienne (France) and the University of Alicante
+(Spain) with a master’s degree in machine learning and data mining. A full stack web developer and
+a data scientist, François has a proven track record working in the SaaS industry, with a special focus
+on Python backends and REST APIs. He is also the creator and maintainer of FastAPI Users, the #1
+authentication library for FastAPI, and is one of the top experts in the FastAPI community
