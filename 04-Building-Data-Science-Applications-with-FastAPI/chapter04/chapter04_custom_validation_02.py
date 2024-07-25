@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ValidationError, root_validator
+from pydantic import BaseModel, EmailStr, ValidationError, model_validator
 
 
 class UserRegistration(BaseModel):
@@ -6,7 +6,7 @@ class UserRegistration(BaseModel):
     password: str
     password_confirmation: str
 
-    @root_validator()
+    @model_validator()
     def passwords_match(cls, values):
         password = values.get("password")
         password_confirmation = values.get("password_confirmation")

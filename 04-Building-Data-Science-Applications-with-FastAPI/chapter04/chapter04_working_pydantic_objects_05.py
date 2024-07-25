@@ -40,8 +40,8 @@ async def partial_update(id: int, post_update: PostPartialUpdate):
     try:
         post_db = db.posts[id]
 
-        updated_fields = post_update.dict(exclude_unset=True)
-        updated_post = post_db.copy(update=updated_fields)
+        updated_fields = post_update.model_dump(exclude_unset=True)
+        updated_post = post_db.model_copy(update=updated_fields)
 
         db.posts[id] = updated_post
         return updated_post

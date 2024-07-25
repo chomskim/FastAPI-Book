@@ -34,7 +34,7 @@ app = FastAPI()
 async def create(post_create: PostCreate):
     new_id = max(db.posts.keys() or (0,)) + 1
 
-    post = Post(id=new_id, **post_create.dict())
+    post = Post(id=new_id, **post_create.model_dump())
 
     db.posts[new_id] = post
     return post

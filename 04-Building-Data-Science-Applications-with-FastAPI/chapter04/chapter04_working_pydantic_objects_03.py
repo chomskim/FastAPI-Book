@@ -26,7 +26,7 @@ class Person(BaseModel):
     address: Address
 
     def name_dict(self):
-        return self.dict(include={"first_name", "last_name"})
+        return self.model_dump(include={"first_name", "last_name"})
 
 
 person = Person(
