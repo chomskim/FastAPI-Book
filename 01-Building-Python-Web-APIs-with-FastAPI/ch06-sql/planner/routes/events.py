@@ -45,7 +45,7 @@ async def create_event(new_event: Event, session=Depends(get_session)):
 
 @event_router.put("/edit/{id}", response_model=Event)
 async def update_event(id: int, new_data: EventUpdate, session=Depends(get_session)
-                       ):
+):
     event = session.get(Event, id)
     if event:
         event_data = new_data.dict(exclude_unset=True)

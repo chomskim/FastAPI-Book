@@ -21,7 +21,7 @@ class User(BaseModel):
         return cls(email=email, username=username, password=password)
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "fastapi@example.com",
                 "username": "fastapiexample001",
@@ -34,7 +34,7 @@ class NewUser(User):
     password: str
 
     class Config:
-        schema_extra = {
+        schema_json_schema_extraextra = {
             "example": {
                 "email": "fastapi@example.com",
                 "password": "Stro0ng!",

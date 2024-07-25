@@ -231,13 +231,12 @@ curl -X 'GET' 'http://0.0.0.0:8000/event/1' -H 'accept: application/json'
 {"detail":"Event with supplied ID does not exist"}
 ```
 
-### Chapter 6
+### Chapter 6 -- ch06-sql
 
 ### SQL Build
 
 ```sh
 pip install sqlmodel
-pip install beanie motor
 pip install pydantic_settings
 
 [Git checkout from planner-sql branch]
@@ -317,6 +316,14 @@ curl -X 'GET' 'http://0.0.0.0:8000/event/' -H 'accept: application/json'
 ]
 
 ```
+
+### MongoDB Build
+
+```sh
+pip install beanie motor
+
+```
+
 
 ### Chapter 7
 
