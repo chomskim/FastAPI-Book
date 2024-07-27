@@ -272,7 +272,7 @@ curl -X 'POST' \
 -d '{
 "title": "FastAPI Book Launch",
 "image": "fastapi-book.jpeg",
-"description": "We will be discussing the contents of the FastAPI book in this event. Ensure to come with your own copy to win gifts!",
+"description": "We will be discussing the contents of the FastAPI book in this event!",
 "tags": [
   "python",
   "fastapi",
@@ -282,7 +282,7 @@ curl -X 'POST' \
 "location": "Google Meet"
 }'
 --------
-{"message":"Event created successfully"}(
+{"message":"Event created successfully"}
 
 curl -X 'GET' 'http://0.0.0.0:8000/event/' -H 'accept: application/json'
 --------
@@ -314,6 +314,39 @@ curl -X 'GET' 'http://0.0.0.0:8000/event/' -H 'accept: application/json'
     "location": "Google Meet"
   }
 ]
+```
+
+#### Update Class EventUpdate -- for pydantic v2.0
+
+```py
+class EventUpdate(SQLModel):
+    title: Optional[str] = Field(default=None)
+    image: Optional[str] = Field(default=None)
+    description: Optional[str] = Field(default=None)
+    tags: Optional[List[str]] = Field(default=None)
+    location: Optional[str] = Field(default=None)
+```
+
+```sh
+curl --location --request PUT 'http://172.30.1.72:8000/event/edit/1' \
+--header 'Content-Type: application/json' \
+--data '{
+    "title": "Very SlowAPI Book Launch"
+}'
+
+{
+    "image": "fastapi-book.jpeg",
+    "id": 1,
+    "tags": [
+        "python",
+        "fastapi",
+        "book",
+        "launch"
+    ],
+    "title": "Very SlowAPI Book Launch",
+    "description": "We will be discussing the contents of the FastAPI book in this event. Ensure to come with your own copy to win gifts!",
+    "location": "Google Meet"
+}
 
 ```
 
@@ -329,6 +362,155 @@ pip install beanie motor
 
 ```sh
 pip install passlib[bcrypt]
+pip install python-jose[cryptography]
+
+python main.py
+...
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+...
+2024-07-26 20:04:14,472 INFO sqlalchemy.engine.Engine 
+CREATE TABLE event (
+        id INTEGER NOT NULL, 
+        title VARCHAR NOT NULL, 
+        image VARCHAR NOT NULL, 
+        description VARCHAR NOT NULL, 
+        tags JSON, 
+        location VARCHAR NOT NULL, 
+        PRIMARY KEY (id)
+)
+...
+CREATE TABLE user (
+        email VARCHAR NOT NULL, 
+        username VARCHAR NOT NULL, 
+        password VARCHAR NOT NULL, 
+        events JSON, 
+        PRIMARY KEY (email)
+)
+...
+
+curl --location 'http://172.30.1.72:8000/event/new' \
+--header 'Content-Type: application/json' \
+--data '{
+    "title": "FastAPI Book Launch",
+    "image": "fastapi-book.jpeg",
+    "description": "We will be discussing the contents of the FastAPI book in this event!",
+    "tags": [
+        "python",
+        "fastapi",
+        "book",
+        "launch"
+    ],
+    "location": "Google Meet"
+}'
+----------------------
+{
+    "message": "Event created successfully"
+}
+----------------------
+curl --location 'http://172.30.1.72:8000/event/'
+
+[
+    {
+        "image": "fastapi-book.jpeg",
+        "id": 1,
+        "tags": [
+            "python",
+            "fastapi",
+            "book",
+            "launch"
+        ],
+        "description": "We will be discussing the contents of the FastAPI book in this event!",
+        "title": "FastAPI Book Launch",
+        "location": "Google Meet"
+    },
+    {
+        "image": "fastapi-book.jpeg",
+        "id": 2,
+        "tags": [
+            "python",
+            "fastapi",
+            "book",
+            "launch"
+        ],
+        "description": "We will be discussing the contents of the FastAPI book in this event!",
+        "title": "SlowAPI Book Launch",
+        "location": "Google Meet"
+    },
+    {
+        "image": "fastapi-book.jpeg",
+        "id": 3,
+        "tags": [
+            "python",
+            "fastapi",
+            "book",
+            "launch"
+        ],
+        "description": "We will be discussing the contents of the FastAPI book in this event!",
+        "title": "Very FastAPI Book Launch",
+        "location": "Google Meet"
+    }
+]
+
+curl --location 'http://172.30.1.72:8000/user/signup' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "fastapi@example.com",
+    "events": [],
+    "password": "Str0ng!!",
+    "username": "fastapiexample001"
+}'
+
+{
+    "message": "User created successfully"
+}
+
+curl --location 'http://172.30.1.72:8000/user/signup' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "slowapi@example.com",
+    "events": [1,2],
+    "password": "Str0ng!!",
+    "username": "slowapi001"
+}'
+
+{
+    "message": "User created successfully"
+}
+
+# async def sign_user_in(user: UserSignIn, session=Depends(get_session)) -> dict:
+curl --location 'http://172.30.1.72:8000/user/signin' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "slowapi@example.com",
+    "password": "Str0ng!!"
+}'
+
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2xvd2FwaUBleGFtcGxlLmNvbSIsImV4cGlyZXMiOjE3MjIwNDQ1NjcuMjk3OTk2OH0.o2Emrh50BhtJ2MasMkdSUsrNXpExS4PwuCxK1G_Djtc",
+    "token_type": "Bearer"
+}
+
+curl --location 'http://172.30.1.72:8000/event/new' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2xvd2FwaUBleGFtcGxlLmNvbSIsImV4cGlyZXMiOjE3MjIwNDQ1NjcuMjk3OTk2OH0.o2Emrh50BhtJ2MasMkdSUsrNXpExS4PwuCxK1G_Djtc' \
+--data '{
+    "title": "Very SlowAPI Book Launch",
+    "image": "fastapi-book.jpeg",
+    "description": "We will be discussing the contents of the FastAPI book in this event!",
+    "tags": [
+        "python",
+        "fastapi",
+        "book",
+        "launch"
+    ],
+    "location": "Google Meet"
+}'
+
+{
+    "message": "Event created successfully"
+}
+
+# async def sign_user_in(user: OAuth2PasswordRequestForm = Depends(), session=Depends(get_session)) -> dict:
 
 ```
 

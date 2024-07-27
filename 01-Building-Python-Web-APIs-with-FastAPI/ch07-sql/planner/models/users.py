@@ -2,15 +2,18 @@
 from typing import Optional, List
 
 from fastapi import Form
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
+from sqlmodel import SQLModel, Field, Column, JSON
+
 
 from models.events import Event
 
 
-class User(BaseModel):
-    email: EmailStr
-    username: str
-    events: Optional[List[Event]] = Field(default=[])
+class User(SQLModel, table=True):
+    email: EmailStr = Field(...,primary_key=True)
+    username: str = Field(...)
+    password: str = Field(...)
+    events: List[int] = Field(default=[], sa_column=Column(JSON))
 
     @classmethod
     def as_form(
@@ -26,27 +29,13 @@ class User(BaseModel):
             "example": {
                 "email": "fastapi@example.com",
                 "username": "fastapiexample001",
-                "events": [],
+                "password": "Str0ng!!",
             }
         }
 
-
-class NewUser(User):
-    password: str
-
-    class Config:
-        schema_json_schema_extraextra = {
-            "example": {
-                "email": "fastapi@example.com",
-                "password": "Stro0ng!",
-                "username": "FastPackt"
-            }
-        }
-
-
-class UserSignIn(BaseModel):
-    email: EmailStr
-    password: str
+class UserSignIn(SQLModel):
+    email: EmailStr = Field(...)
+    password: str = Field(...)
 
     @classmethod
     def as_form(
@@ -56,3 +45,6 @@ class UserSignIn(BaseModel):
     ):
         return cls(email=email, password=password)
 
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

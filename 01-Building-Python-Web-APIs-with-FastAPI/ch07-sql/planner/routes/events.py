@@ -1,7 +1,8 @@
 from typing import List
 
+from auth.authenticate import authenticate
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.templating import Jinja2Templates
 from sqlmodel import select
 
 from database.connection import get_session
@@ -11,9 +12,6 @@ event_router = APIRouter(
     tags=["Events"]
 )
 
-templates = Jinja2Templates(directory="templates/")
-
-
 @event_router.get("/", response_model=List[Event])
 async def retrieve_all_Event(session=Depends(get_session)):
     statement = select(Event)
@@ -22,7 +20,7 @@ async def retrieve_all_Event(session=Depends(get_session)):
 
 
 @event_router.get("/{id}", response_model=Event)
-async def retrieve_event(id: int, session=Depends(get_session)):
+async def retrieve_event(id: int, session=Depends(get_session)) -> Event:
     event = session.get(Event, id)
     if event:
         return event
@@ -33,7 +31,8 @@ async def retrieve_event(id: int, session=Depends(get_session)):
 
 
 @event_router.post("/new")
-async def create_event(new_event: Event, session=Depends(get_session)):
+async def create_event(new_event: Event, user: str = Depends(authenticate), session=Depends(get_session)):
+    print('new_event user=',user)
     session.add(new_event)
     session.commit()
     session.refresh(new_event)
@@ -43,7 +42,7 @@ async def create_event(new_event: Event, session=Depends(get_session)):
     }
 
 
-@event_router.put("/edit/{id}", response_model=Event)
+@event_router.put("/{id}", response_model=Event)
 async def update_event(id: int, new_data: EventUpdate, session=Depends(get_session)
 ):
     print('new_data=',new_data)
@@ -66,8 +65,8 @@ async def update_event(id: int, new_data: EventUpdate, session=Depends(get_sessi
     )
 
 
-@event_router.delete("/delete/{id}")
-async def delete_event(id: int, session=Depends(get_session)):
+@event_router.delete("/{id}")
+async def delete_event(id: int, user: str = Depends(authenticate), session=Depends(get_session)) -> dict:
     event = session.get(Event, id)
     if event:
         session.delete(event)

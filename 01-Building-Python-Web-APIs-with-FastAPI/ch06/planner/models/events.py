@@ -27,11 +27,11 @@ class Event(Document):
 
 
 class EventUpdate(BaseModel):
-    title: Optional[str]
-    image: Optional[str]
-    description: Optional[str]
-    tags: Optional[List[str]]
-    location: Optional[str]
+    title: Optional[str] = Field(default=None)
+    image: Optional[str] = Field(default=None)
+    description: Optional[str] = Field(default=None)
+    tags: Optional[List[str]] = Field(default=None)
+    location: Optional[str] = Field(default=None)
 
     class Config:
         json_schema_extra = {
